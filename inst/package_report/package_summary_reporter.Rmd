@@ -1,0 +1,14 @@
+---
+title: "Package Summary Report"
+output: html_document
+---
+
+## Package Summary
+
+Here's some general information about **`r reporter$pkg_name`**. 
+
+### Table
+
+```{r results='asis'}
+reporter$get_summary_view()
+```
