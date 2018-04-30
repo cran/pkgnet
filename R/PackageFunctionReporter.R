@@ -13,9 +13,10 @@
 #'                 previously-set package name, any cached data will be removed.}
 #'             \item{\bold{Args:}}{
 #'                 \itemize{
-#'                 \item{\bold{\code{pkg_name}}: String with the name of the package}
-#'                 \item{\bold{\code{pkg_path}}: Optional path to the source code. 
-#'                     To be used for test coverage, if provided.}
+#'                 \item{\bold{\code{pkg_name}}: String with the name of the package.}
+#'                 \item{\bold{\code{pkg_path}}: Optional directory path to source
+#'                   code of the package. It is used for calculating test coverage.
+#'                   It can be an absolute or relative path.}
 #'                }
 #'             }
 #'         }
@@ -41,6 +42,10 @@ FunctionReporter <- R6::R6Class(
               , lengthChange = FALSE
             )
           )
+          # Round the double columns to three digits for formatting reasons
+          numCols <- names(which(unlist(lapply(tableObj$x$data, is.double))))
+          tableObj <- DT::formatRound(columns = numCols, table = tableObj
+                                      , digits=3)
           return(tableObj)
         }
     ),
