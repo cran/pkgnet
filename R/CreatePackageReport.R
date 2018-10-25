@@ -3,13 +3,7 @@
 #' @description Surface the internal and external dependencies of an R package. 
 #' @author B. Burns
 #' @seealso GetPackageGraphs
-#' @param pkg_name (string) name of a package
-#' @param pkg_reporters (list) a list of package reporters
-#' @param pkg_path (string) The path to the package repository. If given, coverage
-#'                 will be calculated for each function. \code{pkg_path} can be an
-#'                 absolute or relative path.
-#' @param report_path (string) The path and filename of the output report.  Default
-#'                   report will be produced in working directory.
+#' @inheritParams pkg_shared_doc
 #' @importFrom assertthat assert_that is.string
 #' @importFrom methods is
 #' @importFrom utils browseURL
