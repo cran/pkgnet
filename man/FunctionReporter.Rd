@@ -13,6 +13,13 @@ This Reporter takes a package and uncovers the structure from
              its other functions, determining useful information such as which function is most
              central to the package. Combined with testing information it can be used as a powerful tool
              to plan testing efforts.
+
+R6 classes are supported, with methods treated as functions by the Reporter.
+R6 methods will be named like \code{<classname>$<methodtype>$<methodname>}
+, e.g., \code{FunctionReporter$private_methods$extract_nodes}. Note that the
+class name used will be the \emph{name of the generator object in the package's namespace},
+and \emph{not} the \code{classname} attribute of the class, which is not required to be defined
+or to be the same as the generator object name.
 }
 \section{Public Methods}{
 
@@ -34,8 +41,27 @@ This Reporter takes a package and uncovers the structure from
 }
 }
 
+\section{Known Limitations}{
+
+\itemize{
+    \item{Using non-standard evaluation to refer to things (e.g, dataframe column names)
+    that have the same name as a function will trick \code{FunctionReporter} into thinking
+    the function was called. This can be avoided if you don't use reuse function names
+    for other purposes.}
+    \item{Functions stored as list items and not assigned to the package namespace
+    will be invisible to \code{FunctionReporter}.}
+    \item{Calls to methods of instantiated R6 or reference objects will not be recognized.
+    We don't have a reliable way of identifying instantiated objects, or identifying
+    their class.}
+    \item{Reference class methods are not yet supported. They will not be idenified
+    as nodes by \code{FunctionReporter}.}
+}
+}
+
 \seealso{
 Other PackageReporters: \code{\link{DependencyReporter}},
+  \code{\link{InheritanceReporter}},
   \code{\link{SummaryReporter}}
 }
+\concept{PackageReporters}
 \keyword{datasets}

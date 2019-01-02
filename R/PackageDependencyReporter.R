@@ -5,6 +5,7 @@
 #'              its other package dependencies, determining which package it relies on is most central,
 #'              allowing for a developer to determine how to vet its dependency tree
 #' @importFrom data.table data.table setnames rbindlist
+#' @importFrom DT datatable formatRound
 #' @importFrom R6 R6Class
 #' @importFrom utils installed.packages
 #' @importFrom tools package_dependencies
@@ -44,11 +45,11 @@ DependencyReporter <- R6::R6Class(
         },
 
         get_summary_view = function(){
-            
+
             # Calculate network measures if not already done
             # since we want the node measures in summary
             invisible(self$network_measures)
-            
+
             # Create DT for display
             tableObj <- DT::datatable(
                 data = self$nodes
@@ -89,6 +90,8 @@ DependencyReporter <- R6::R6Class(
     ),
 
     private = list(
+        # Default graph viz layout
+        private_layout_type = "layout_as_tree",
 
         dep_types = NULL,
         ignore_packages = NULL,
@@ -107,7 +110,7 @@ DependencyReporter <- R6::R6Class(
 
             # Consider only installed packages when building dependency network
             if (private$installed){
-                db <- utils::installed.packages()
+                db <- utils::installed.packages(lib.loc = .libPaths())
                 if (!is.element(self$pkg_name, db[,1])) {
                     msg <- sprintf('%s is not an installed package. Consider setting installed to FALSE.', self$pkg_name)
                     log_fatal(msg)
@@ -162,22 +165,25 @@ DependencyReporter <- R6::R6Class(
             }
 
             dependencyList <- Filter(function(x){!is.null(x)}, dependencyList)
-            
+
             if (identical(names(dependencyList), self$pkg_name)){
                 msg <- paste0(
-                    "Package '%s' does not have any dependencies in [%s]. If you think this is an error ", 
+                    "Package '%s' does not have any dependencies in [%s]. If you think this is an error ",
                     "consider adding more dependency types in your definition of DependencyReporter. ",
                     "For example: DependencyReporter$new(dep_types = c('Imports', 'Depends', 'Suggests'))"
                 )
                 log_fatal(sprintf(msg, self$pkg_name, paste(private$dep_types, collapse = ", ")))
             }
 
+            # If pkg A depends on pkg B, then A -> B
+            # A is the SOURCE and B is the TARGET
+            # This is UML dependency convention
             edges <- data.table::rbindlist(lapply(
                 names(dependencyList),
                 function(pkgN){
                     data.table::data.table(
-                        SOURCE = dependencyList[[pkgN]]
-                        , TARGET = rep(pkgN,length(dependencyList[[pkgN]]))
+                        SOURCE = rep(pkgN, length(dependencyList[[pkgN]]))
+                        , TARGET = dependencyList[[pkgN]]
                     )
                 }
             ))
@@ -235,5 +241,16 @@ DependencyReporter <- R6::R6Class(
             }
             return(outPackages)
         }
-    )
+
+        , plot_network = function() {
+            g <- super$plot_network()
+
+            g <- (g
+                  %>% visNetwork::visHierarchicalLayout(
+                      sortMethod = "directed"
+                      , direction = "UD")
+            )
+            return(g)
+        }
+    ) # /private
 )

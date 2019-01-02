@@ -28,6 +28,8 @@ reporter$plot_network()
 }
 \seealso{
 Other PackageReporters: \code{\link{FunctionReporter}},
+  \code{\link{InheritanceReporter}},
   \code{\link{SummaryReporter}}
 }
+\concept{PackageReporters}
 \keyword{datasets}
