@@ -1,7 +1,7 @@
 Package: pkgnet
 Type: Package
 Title: Get Network Representation of an R Package
-Version: 0.3.0
+Version: 0.3.1
 Authors@R: c(
     person("Brian", "Burns", email = "brian.burns@uptake.com", role = c("aut", "cre")),
     person("James", "Lamb", email = "james.lamb@uptake.com", role = c("aut")),
@@ -24,10 +24,10 @@ LazyData: TRUE
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2018-12-21 16:33:46 UTC; bburns
+Packaged: 2019-01-20 00:11:45 UTC; bburns
 Author: Brian Burns [aut, cre],
   James Lamb [aut],
   Patrick Boueri [ctb],
   Jay Qi [aut]
 Repository: CRAN
-Date/Publication: 2019-01-03 00:40:02 UTC
+Date/Publication: 2019-01-20 06:00:02 UTC
