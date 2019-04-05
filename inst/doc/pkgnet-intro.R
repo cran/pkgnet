@@ -96,6 +96,7 @@ funcReporter2$set_package(
     pkg_name = "baseballstats"
     , pkg_path = system.file('baseballstats',package="pkgnet")
 )
+funcReporter2$calculate_default_measures()
 g <- visNetwork::visHierarchicalLayout(
     graph = funcReporter2$graph_viz
     , direction = "UD"
@@ -119,8 +120,11 @@ names(report2$FunctionReporter$nodes)
 ## ----networkMeasures-----------------------------------------------------
 report2$FunctionReporter$network_measures
 
+## ----networkObjAddtlMeasures---------------------------------------------
+report2$FunctionReporter$pkg_graph$node_measures(c('hubScore', 'authorityScore'))
+
 ## ----networkObj----------------------------------------------------------
-report2$FunctionReporter$pkg_graph
+report2$FunctionReporter$pkg_graph$igraph
 
 ## ----fakeDetail1, eval=FALSE---------------------------------------------
 #  # Run pkgnet
@@ -134,12 +138,22 @@ report2$FunctionReporter$pkg_graph
 #  funcNodes <- report2$FunctionReporter$nodes
 #  
 #  # List Coverage For Most Depended-on Functions
-#  mostRef <- funcNodes[order(inSubgraphSize, decreasing = TRUE)][1:10]
-#  mostRef[,list(`Function` = node
-#                , `In-Subgraph Size` = inSubgraphSize
-#                , `Coverage Ratio` = coverageRatio
-#                , `Total Lines` = totalLines)]
-#  
+#  mostRef <- funcNodes[order(numRecursiveRevDeps, decreasing = TRUE),
+#                       .(node, numRecursiveRevDeps, coverageRatio, totalLines)
+#                       ][1:10]
+
+## ----fakeDetail1Results, eval=FALSE--------------------------------------
+#  #>             node numRecursiveRevDeps coverageRatio totalLines
+#  #>  1:        month                  81             1          1
+#  #>  2:           tz                  79             1          1
+#  #>  3: reclass_date                  68             1          1
+#  #>  4:         date                  67             1          1
+#  #>  5:      is.Date                  60             1          1
+#  #>  6:    is.POSIXt                  57             1          1
+#  #>  7:         wday                  56             1          1
+#  #>  8:   is.POSIXct                  55             1          1
+#  #>  9:  .deprecated                  55             0         10
+#  #> 10:      as_date                  52             1          1
 
 ## ----fakeDetail2, eval=FALSE---------------------------------------------
 #  # Get igraph object
@@ -168,14 +182,26 @@ report2$FunctionReporter$pkg_graph
 #  }
 
 ## ----resultFromFake, echo=FALSE, results='markup'------------------------
-cat("Group 1: stamp_time, stamp_date
-Group 2: ms, hm
-Group 3: new_interval, %--%, int_diff
-Group 4: floor_date, quarter, semester
-Group 5: picoseconds, microseconds, nanoseconds, milliseconds
-Group 6: weeks, days, years, seconds_to_period, seconds, new_period, minutes, hours
-Group 7: yq, dmy, ymd_hms, ymd_hm, ymd_h, ymd, ydm_hms, ydm_hm, ydm_h, ydm, pretty_dates, parse_date_time2, parse_date_time, myd, mdy_hms, mdy_hm, mdy_h, mdy, local_time, fast_strptime, dym, dmy_hms, dmy_hm, dmy_h
-"
+cat("Group 1: divisible_period, make_date
+Group 2: parse_date_time2, fast_strptime
+Group 3: .deprecated_fun, .deprecated_arg
+Group 4: stamp_date, stamp_time
+Group 5: epiweek, isoweek
+Group 6: ms, hm
+Group 7: quarter, semester
+Group 8: am, .roll_hms
+Group 9: modulo_interval_by_duration, modulo_interval_by_period
+Group 10: .difftime_from_pieces, .duration_from_units
+Group 11: divide_period_by_period, xtfrm.Period
+Group 12: int_diff, %--%
+Group 13: isoyear, epiyear
+Group 14: nanoseconds, microseconds, picoseconds, milliseconds
+Group 15: period_to_seconds, check_period, multiply_period_by_number, format.Period, divide_period_by_number, add_period_to_period
+Group 16: myd, dmy, yq, ymd, dym, mdy, ydm
+Group 17: hours, weeks, minutes, years, days, months.numeric, seconds, seconds_to_period
+Group 18: C_force_tz, hour.default, mday.default, c.POSIXct, .mklt, yday.default, year.default, minute.default, second.default
+Group 19: ehours, emilliseconds, eyears, eseconds, epicoseconds, enanoseconds, eminutes, olson_time_zones, edays, emicroseconds, eweeks
+Group 20: dmy_h, ydm_hms, ymd_hms, dmy_hm, ymd_h, ydm_hm, ydm_h, dmy_hms, ymd_hm, mdy_hms, mdy_hm, mdy_h"
 )
 
 ## ----removeDemoPackage, include=FALSE------------------------------------
