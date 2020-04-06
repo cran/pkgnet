@@ -4,9 +4,12 @@
 \alias{CreatePackageReport}
 \title{pkgnet Analysis Report for an R package}
 \usage{
-CreatePackageReport(pkg_name, pkg_reporters = DefaultReporters(),
-  pkg_path = NULL, report_path = tempfile(pattern = pkg_name, fileext =
-  ".html"))
+CreatePackageReport(
+  pkg_name,
+  pkg_reporters = DefaultReporters(),
+  pkg_path = NULL,
+  report_path = tempfile(pattern = pkg_name, fileext = ".html")
+)
 }
 \arguments{
 \item{pkg_name}{(string) name of a package}
@@ -21,8 +24,9 @@ absolute or relative path.}
 report will be produced in the temporary directory.}
 }
 \value{
-A list of instantiated pkg_reporters fitted to \code{pkg_name}
+an instantiated \code{\link{PackageReport}} object
 }
 \description{
 Create a standalone HTML report about a package and its networks.
 }
+\concept{Main Functions}

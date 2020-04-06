@@ -1,6 +1,7 @@
 #' @title Network Reporters for Packages
 #' @name NetworkReporters
 #' @keywords internal
+#' @concept Reporters
 #' @description \pkg{pkgnet} defines several package reporter R6 classes that model
 #'     a particular network aspect of a package as a graph. These network
 #'     reporter classes are extended from \code{AbstractGraphReporter}, which
@@ -94,11 +95,12 @@ AbstractGraphReporter <- R6::R6Class(
             )
 
             # Round the double columns to three digits for formatting reasons
-            numCols <- names(which(unlist(lapply(tableObj$x$data, is.double))))
+            doubleCols <- names(which(unlist(lapply(tableObj$x$data, is.double))))
+
             tableObj <- DT::formatRound(
-                columns = numCols
+                columns = doubleCols
                 , table = tableObj
-                , digits=3
+                , digits = 3
             )
             return(tableObj)
         }
@@ -229,11 +231,14 @@ AbstractGraphReporter <- R6::R6Class(
                 })
             }
 
-            if (!all(areColors(palette))) {
-                notColors <- names(areColors)[areColors == FALSE]
+            colorChecks <- areColors(palette)
+            if (!all(colorChecks)) {
+                notColors <- names(colorChecks)[colorChecks == FALSE]
                 notColorsTXT <- paste(notColors, collapse = ", ")
-                log_fatal(sprintf("The following are invalid colors: %s"
-                                  , notColorsTXT))
+                log_fatal(sprintf(
+                    "The following are invalid colors: %s"
+                    , notColorsTXT
+                ))
             }
 
             private$plotNodeColorScheme <- list(

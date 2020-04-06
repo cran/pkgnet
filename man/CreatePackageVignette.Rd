@@ -4,9 +4,11 @@
 \alias{CreatePackageVignette}
 \title{pkgnet Report as Vignette}
 \usage{
-CreatePackageVignette(pkg = ".",
+CreatePackageVignette(
+  pkg = ".",
   pkg_reporters = list(DependencyReporter$new(), FunctionReporter$new()),
-  vignette_path = file.path(pkg, "vignettes", "pkgnet-report.Rmd"))
+  vignette_path = file.path(pkg, "vignettes", "pkgnet-report.Rmd")
+)
 }
 \arguments{
 \item{pkg}{(string) path to root directory of package of interest}
@@ -23,9 +25,10 @@ Create pkgnet package report as an R Markdown vignette. This
    \code{\link[knitr:vignette_engines]{knitr::rmarkdown}} vignette engine
    into HTML vignettes upon package building. It is also compatible with
    #'    \code{\link[pkgdown:build_articles]{pkgdown}} sites. See the vignette
-   \href{https://uptakeopensource.github.io/pkgnet/articles/publishing-reports.html}{
+   \href{https://uptake.github.io/pkgnet/articles/publishing-reports.html}{
    "Publishing Your pkgnet Package Report"} for details about how to use this
    function, as well as
-   \href{https://uptakeopensource.github.io/pkgnet-gallery/exhibits/pkgnet-vignette/pkgnet-vignette.html}{
+   \href{https://uptake.github.io/pkgnet-gallery/exhibits/pkgnet-vignette/pkgnet-vignette.html}{
    our example for pkgnet}.
 }
+\concept{Main Functions}

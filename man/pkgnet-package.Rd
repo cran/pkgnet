@@ -72,24 +72,19 @@ R packages can be complex bodies of code and functionality with
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/UptakeOpenSource/pkgnet}
-  \item \url{https://uptakeopensource.github.io/pkgnet/}
-  \item Report bugs at \url{https://github.com/UptakeOpenSource/pkgnet/issues}
+  \item \url{https://github.com/uptake/pkgnet}
+  \item \url{https://uptake.github.io/pkgnet/}
+  \item Report bugs at \url{https://github.com/uptake/pkgnet/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Brian Burns \email{brian.burns@uptake.com}
+\strong{Maintainer}: Brian Burns \email{brian.burns.opensource@gmail.com}
 
 Authors:
 \itemize{
-  \item James Lamb \email{james.lamb@uptake.com}
-  \item Jay Qi \email{jay.qi@uptake.com}
-}
-
-Other contributors:
-\itemize{
-  \item Patrick Boueri \email{patrick.boueri@uptake.com} [contributor]
+  \item James Lamb \email{jaylamb20@gmail.com}
+  \item Jay Qi \email{jayqi.opensource@gmail.com}
 }
 
 }

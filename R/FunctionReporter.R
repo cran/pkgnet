@@ -2,6 +2,7 @@
 #' @name FunctionReporter
 #' @family Network Reporters
 #' @family Package Reporters
+#' @concept Reporters
 #' @description This reporter looks at the network of interdependencies of its
 #'    defined functions. Measures of centrality from graph theory can indicate
 #'    which function is most important to a package. Combined with unit test
@@ -304,6 +305,7 @@ FunctionReporter <- R6::R6Class(
                             , pkg_env = private$get_pkg_env()
                             , pkg_functions = funs
                             )
+                        , SIMPLIFY = FALSE
                         )
                     )
                     , fill = TRUE
@@ -563,7 +565,7 @@ FunctionReporter <- R6::R6Class(
     # Not not matched, try parent if there is one and it is in package
     if (is.na(out)
         && inheritanceDT[CLASS_NAME == class_name
-                         , !is.na(PARENT_NAME) && PARENT_IN_PKG]) {
+                         , .N > 0 && !is.na(PARENT_NAME) && PARENT_IN_PKG]) {
         out <- .match_R6_class_methods(
             symbol_name
             , inheritanceDT[CLASS_NAME == class_name, PARENT_NAME]
@@ -604,7 +606,7 @@ FunctionReporter <- R6::R6Class(
     # If not matched, try parent if there is one and it is in package
     if (is.na(out)
         && inheritanceDT[CLASS_NAME == parent_name
-                         , !is.na(PARENT_NAME) && PARENT_IN_PKG]) {
+                         , .N > 0 && !is.na(PARENT_NAME) && PARENT_IN_PKG]) {
         out <- .match_R6_super_methods(
             method_name
             , inheritanceDT[CLASS_NAME == parent_name, PARENT_NAME]
