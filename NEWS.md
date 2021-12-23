@@ -1,6 +1,11 @@
 # pkgnet (dev)
+## NEW FEATURES
+* Node coloring in DependencyReporter (#243)
 
-_No changes since latest release_
+## CHANGES
+* Removed LazyData field to accomodate change in CRAN policy. (#289)
+
+## BUGFIXES
 
 # pkgnet 0.4.1
 
@@ -13,6 +18,7 @@ _No changes since latest release_
 * Contact information updated throughout the package documentation.
 * Appveyor testing configured in order to test windows builds in CI process.
 * Package logos were created.  They are available within this repository at `./man/figures`.
+* Remove vignettes from CRAN hosted package.  They remain as articles on the website.
 
 ## BUGFIXES
 * Error handling for erroneous colors within `AbstractGraphReporter$set_plot_node_color_scheme()`. ([#262](https://github.com/uptake/pkgnet/pull/262)

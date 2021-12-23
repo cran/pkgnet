@@ -1,9 +1,9 @@
 # pkgnet <img src="man/figures/logo.png" align="right" alt="" width="120" />
 
-[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-last-release/pkgnet)](https://cran.r-project.org/package=pkgnet) [![CRAN\_Download\_Badge](https://cranlogs.r-pkg.org/badges/grand-total/pkgnet)](https://cran.r-project.org/package=pkgnet) [![Build Status](https://img.shields.io/travis/uptake/pkgnet.svg?label=build&logo=travis&branch=master)](https://travis-ci.org/uptake/pkgnet)
-[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/github/uptake/pkgnet?branch=master&svg=true)](https://ci.appveyor.com/project/jameslamb/pkgnet)
-[![codecov](https://codecov.io/gh/uptake/pkgnet/branch/master/graph/badge.svg)](https://codecov.io/gh/uptake/pkgnet) 
-![Lifecycle badge](https://img.shields.io/badge/lifecycle-maturing-blue.svg)
+[![CRAN\_Status\_Badge](https://www.r-pkg.org/badges/version-last-release/pkgnet)](https://cran.r-project.org/package=pkgnet) [![CRAN\_Download\_Badge](https://cranlogs.r-pkg.org/badges/grand-total/pkgnet)](https://cran.r-project.org/package=pkgnet) [![GitHub Actions Build Status](https://github.com/uptake/pkgnet/workflows/Tests/badge.svg?branch=main)](https://github.com/uptake/pkgnet/actions?query=workflow%3ATests+branch%3Amain)
+[![Appveyor Build status](https://ci.appveyor.com/api/projects/status/github/uptake/pkgnet?branch=main&svg=true)](https://ci.appveyor.com/project/jameslamb/pkgnet)
+[![codecov](https://app.codecov.io/gh/uptake/pkgnet/branch/main/graph/badge.svg)](https://app.codecov.io/gh/uptake/pkgnet) 
+[![Lifecycle badge](https://lifecycle.r-lib.org/articles/figures/lifecycle-stable.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 
 ## Introduction
 
@@ -13,14 +13,13 @@
 - examining the recursive dependencies you are taking on by using a given package
 - exploring the structure of a new package provided by a coworker or downloaded from the internet
 
-![](https://raw.githubusercontent.com/uptake/pkgnet/master/readme_figures/demo.gif)
+![](https://raw.githubusercontent.com/uptake/pkgnet/main/readme_figures/demo.gif)
 
 # Table of contents
 1. [How it Works](#howitworks)
 2. [Installation](#installation)
 3. [Usage Examples](#examples)
 4. [How to Contribute](#contributing)
-5. [Next Steps](#nextsteps)
 
 ## How it Works <a name="howitworks"></a>
 
@@ -47,8 +46,4 @@ result <- CreatePackageReport('ggplot2')
 
 To report bugs, request features, or ask questions about the structure of the code, please [open an issue](https://github.com/uptake/pkgnet/issues).
 
-If you'd like to contribute to the project, please [open a pull request](https://github.com/uptake/pkgnet/pulls). PRs should follow the project's [contribution guidelines](https://github.com/uptake/pkgnet/blob/master/CONTRIBUTING.md).
-
-## Next Steps <a name="nextsteps"></a>
-
-This is a fairly new project and, as the version number indicates, should be regarded as a work in progress.
+If you'd like to contribute to the project, please [open a pull request](https://github.com/uptake/pkgnet/pulls). PRs should follow the project's [contribution guidelines](https://github.com/uptake/pkgnet/blob/main/CONTRIBUTING.md).
