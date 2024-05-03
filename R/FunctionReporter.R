@@ -1,21 +1,12 @@
-#' @title Function Interdependency Reporter
-#' @name FunctionReporter
-#' @family Network Reporters
-#' @family Package Reporters
-#' @concept Reporters
-#' @description This reporter looks at the network of interdependencies of its
-#'    defined functions. Measures of centrality from graph theory can indicate
-#'    which function is most important to a package. Combined with unit test
-#'    coverage information---also provided by this reporter--- it can be used
-#'    as a powerful tool to prioritize test writing.
-#' @section Class Constructor:
-#' \preformatted{FunctionReporter$new()}
-#' @inheritSection PackageReporters Class Constructor
-#' @inheritSection PackageReporters Public Methods
-#' @inheritSection NetworkReporters Public Methods
-#' @inheritSection PackageReporters Public Fields
-#' @inheritSection NetworkReporters Public Fields
-#' @inheritSection PackageReporters Special Methods
+#' Function Interdependency Reporter
+#' 
+#' @description
+#' This reporter looks at the network of interdependencies of its
+#' defined functions. Measures of centrality from graph theory can indicate
+#' which function is most important to a package. Combined with unit test
+#' coverage information---also provided by this reporter--- it can be used
+#' as a powerful tool to prioritize test writing.
+#' 
 #' @details
 #' \subsection{R6 Method Support:}{
 #'     R6 classes are supported, with their methods treated as functions by the
@@ -56,9 +47,9 @@
 #'        }
 #'    }
 #' }
-NULL
-
-
+#' @family Network Reporters
+#' @family Package Reporters
+#' @concept Reporters
 #' @importFrom R6 R6Class is.R6Class
 #' @importFrom assertthat assert_that is.string
 #' @importFrom covr package_coverage
@@ -72,6 +63,9 @@ FunctionReporter <- R6::R6Class(
 
     public = list(
 
+        #' @description
+        #' Calculates the default node and network measures for this reporter.
+        #' @return Self, invisibly.
         calculate_default_measures = function() {
             # Calculate test coverage if pkg_path is set and source code available
             if (!is.null(private$pkg_path)){
@@ -87,6 +81,7 @@ FunctionReporter <- R6::R6Class(
 
     , active = list(
 
+        #' @field report_markdown_path (character string) path to R Markdown template for this reporter. Read-only.
         report_markdown_path = function(){
             system.file(file.path("package_report", "package_function_reporter.Rmd"), package = "pkgnet")
         }
@@ -151,11 +146,21 @@ FunctionReporter <- R6::R6Class(
 
             log_info(sprintf("Calculating test coverage for %s...", self$pkg_name))
 
+            # workaround for covr conflict with loaded packages on windows
+            if(.Platform$OS.type == "windows") {
+                detach(paste0('package:',self$pkg_name), unload = TRUE, character.only = TRUE)
+            }
+
             pkgCovDT <- data.table::as.data.table(covr::package_coverage(
                 path = private$pkg_path
                 , type = "tests"
                 , combine_types = FALSE
             ))
+
+            # workaround for covr conflict with loaded packages on windows
+            if(.Platform$OS.type == "windows") {
+                attachNamespace(self$pkg_name)
+            }
 
             pkgCovDT <- pkgCovDT[, .(coveredLines = sum(value > 0)
                                     , totalLines = .N
@@ -395,18 +400,31 @@ FunctionReporter <- R6::R6Class(
     if (!is.list(x) && listable) {
         x <- as.list(x)
 
-        # Check for expression of the form foo$bar
-        # We still want to split it up because foo might be a function
-        # but we want to get rid of bar, because it's a symbol in foo's namespace
-        # and not a symbol that could be reliably matched to the package namespace
-        if (identical(x[[1]], quote(`$`))) {
-            x <- x[1:2]
+        if (length(x) > 0){
+            # Check for expression of the form foo$bar
+            # We still want to split it up because foo might be a function
+            # but we want to get rid of bar, because it's a symbol in foo's namespace
+            # and not a symbol that could be reliably matched to the package namespace
+            if (identical(x[[1]], quote(`$`))) {
+                x <- x[1:2]
+            }
+        } else {
+            # make empty lists "not listable" so recursion stops
+            listable <- FALSE 
         }
     }
 
 
 
     if (listable){
+        
+        # If do.call and first argument is string (atomic), covert to call
+        if (length(x) >= 2){
+            if (deparse(x[[1]]) == "do.call" & is.character(x[[2]])){
+                x[[2]] <- parse(text=x[[2]])
+            }
+        }
+        
         # Filter out atomic values because we don't care about them
         x <- Filter(f = Negate(is.atomic), x = x)
 
@@ -632,34 +650,37 @@ FunctionReporter <- R6::R6Class(
     # an environment pointer then we can break x up into list of components
     listable <- (!is.atomic(x) && !is.symbol(x) && !is.environment(x))
 
+    # If it is not a list but listable...
     if (!is.list(x) && listable) {
+        # Convert to list
         xList <- as.list(x)
-
-        # Check if expression x is from _$_
-        if (identical(xList[[1]], quote(`$`))) {
-
-            # Check if expression x is of form self$foo, private$foo, or super$foo
-            # We want to keep those together because they could refer to the class'
-            # methods. So expression is not listable
-            if (identical(xList[[2]], quote(self))
-                || identical(xList[[2]], quote(private))
-                || identical(xList[[2]], quote(super))) {
-                listable <- FALSE
-
-            # If expression lefthand side is not keyword, we still want to split
-            # it up because left might be a function
-            # but we want to get rid of right, because it's a symbol in left's namespace
-            # and not a symbol that could be reliably matched to the package namespace
+        if (length(xList) > 0){
+            # Check if expression x is from _$_
+            if (identical(xList[[1]], quote(`$`))) {
+                # Check if expression x is of form self$foo, private$foo, or super$foo
+                if (identical(xList[[2]], quote(self)) || identical(xList[[2]], quote(private)) || identical(xList[[2]], quote(super))) {
+                    # We want to keep those together because they could refer to the class'
+                    # methods. So expression is not listable
+                    listable <- FALSE
+                } else {
+                    # If expression lefthand side is not keyword, we still want to split
+                    # it up because left might be a function
+                    # but we want to get rid of right, because it's a symbol in left's namespace
+                    # and not a symbol that could be reliably matched to the package namespace
+                    x <- xList[1:2]
+                }
             } else {
+                # Left Hand is not a _$_.  Proceed as normal list.
                 x <- xList
-                x <- x[1:2]
             }
-
-        # Otherwise list as usual
         } else {
-            x <- xList
-        }
+            # List is zero length.  This might occur when encountering a "break" command.
+            # Make empty list "non-listable" so recursion stops in following step.
+            listable <- FALSE
+        }   
     }
+
+        
 
     if (listable){
         # Filter out atomic values because we don't care about them

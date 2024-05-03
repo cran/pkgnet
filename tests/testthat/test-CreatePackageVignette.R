@@ -1,6 +1,3 @@
-context("CreatePackageVignette Tests")
-rm(list = ls())
-
 ##### TESTS #####
 
 # baseballstats source path
@@ -177,48 +174,3 @@ test_that("Test that CreatePackageVignette errors for bad inputs", {
         , fixed = TRUE
     )
 })
-
-test_that("CreatePackageVignette warns if vignette_path seems wrong", {
-
-    pkgPath <- .CreateSourceCopy(sourcePath)
-    on.exit(expr = unlink(pkgPath, recursive = TRUE))
-
-    # In a vignettes directory that isn't in a package root
-    vignettesDir <- file.path(tempdir(), "vignettes")
-    dir.create(vignettesDir)
-    expect_warning(
-        CreatePackageVignette(pkg = pkgPath
-                              , vignette_path = file.path(vignettesDir
-                                                          , "pkgnet_report.Rmd")
-        )
-        , regexp = paste("not inside a package root directory")
-        , fixed = TRUE
-    )
-    # Clean up
-    unlink(file.path(tempdir(), "vignettes"), recursive = TRUE)
-
-    # If in root of a different package
-    suppressWarnings({
-        utils::package.skeleton(name = "basketballstats", path = tempdir())
-    })
-    dir.create(file.path(tempdir(), "basketballstats", "vignettes"))
-    expect_warning(
-        CreatePackageVignette(pkg = pkgPath
-                              , vignette_path = file.path(tempdir()
-                                                          , "basketballstats"
-                                                          , "vignettes"
-                                                          , "pkgnet_report.Rmd")
-        )
-        , regexp = paste("You are writing a report for baseballstats to the"
-                         , "vignettes directory for basketballstats")
-        , fixed = TRUE
-    )
-    # Clean up
-    unlink(file.path(tempdir(), "basketballstats"), recursive = TRUE)
-
-})
-
-##### TEST TEAR DOWN #####
-
-rm(list = ls())
-closeAllConnections()

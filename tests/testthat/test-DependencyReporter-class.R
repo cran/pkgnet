@@ -1,6 +1,3 @@
-context("DependencyReporter Class Tests")
-rm(list = ls())
-
 ##### TESTS #####
 
 ## PUBLIC INTERFACE ##
@@ -73,15 +70,15 @@ test_that('DependencyReporter works end-to-end for typical use', {
     expect_true({"DirectedGraph" %in% class(testObj$pkg_graph)})
     expect_true({igraph::is_igraph(testObj$pkg_graph$igraph)})
     expect_setequal(
-        object = igraph::get.vertex.attribute(testObj$pkg_graph$igraph)[['name']]
+        object = igraph::vertex_attr(testObj$pkg_graph$igraph)[['name']]
         , expected = testObj$nodes[, node]
     )
     expect_setequal(
-        object = igraph::get.edgelist(testObj$pkg_graph$igraph)[,1]
+        object = igraph::as_edgelist(testObj$pkg_graph$igraph)[,1]
         , expected = testObj$edges[, SOURCE]
     )
     expect_setequal(
-        object = igraph::get.edgelist(testObj$pkg_graph$igraph)[,2]
+        object = igraph::as_edgelist(testObj$pkg_graph$igraph)[,2]
         , expected = testObj$edges[, TARGET]
     )
 
@@ -147,8 +144,3 @@ test_that("DependencyReporter should break with an informative error for package
         reporter$graph_viz
     }, regexp = "consider adding more dependency types in your definition of DependencyReporter")
 })
-
-##### TEST TEAR DOWN #####
-
-rm(list = ls())
-closeAllConnections()
