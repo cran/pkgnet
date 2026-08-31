@@ -59,11 +59,6 @@ test_that('FunctionReporter works end-to-end for typical use', {
                  , info = "$pkg_name did not return expected package name")
 
     ## Node and Edge extraction work ##
-   # expect_silent({
-   #     testObj$nodes
-   #     testObj$edges
-   # })
-
     expect_true(data.table::is.data.table(testObj$nodes))
     expect_true(object = is.element("node", names(testObj$nodes))
                 , info = "Node column created")
@@ -74,8 +69,6 @@ test_that('FunctionReporter works end-to-end for typical use', {
 
 
     ## pkg_graph works ##
-
-    #expect_silent({testObj$pkg_graph})
     expect_true({"AbstractGraph" %in% class(testObj$pkg_graph)})
     expect_true({"DirectedGraph" %in% class(testObj$pkg_graph)})
     expect_true({igraph::is_igraph(testObj$pkg_graph$igraph)})
@@ -118,7 +111,6 @@ test_that('FunctionReporter works end-to-end for typical use', {
     )
 
     ## graph_viz works ##
-    #expect_silent({testObj$graph_viz})
     expect_true(object = is.element("visNetwork", attributes(testObj$graph_viz)))
     expect_equivalent(
         object = as.data.table(testObj$graph_viz$x$nodes)[, .(id)]
@@ -136,7 +128,6 @@ test_that('FunctionReporter works end-to-end for typical use', {
 
 test_that('FunctionReporter can directly generate pkg_graph', {
     testObj <- FunctionReporter$new()$set_package("baseballstats")
-    #expect_silent(testObj$pkg_graph)
     expect_true("AbstractGraph" %in% class(testObj$pkg_graph))
     expect_true(object = igraph::is_igraph(testObj$pkg_graph$igraph)
                 , info = "Package graph did not successfuly generate igraph object")
@@ -144,7 +135,6 @@ test_that('FunctionReporter can directly generate pkg_graph', {
 
 test_that('FunctionReporter can directly generate graph_viz', {
     testObj <- FunctionReporter$new()$set_package("baseballstats")
-    #expect_silent({testObj$graph_viz})
     expect_true(object = is.element("visNetwork", attributes(testObj$graph_viz)))
 })
 
@@ -348,6 +338,45 @@ test_that(".parse_R6_expression correctly parses expressions containing a next s
               , "self$active_binding", "private$private_method"
         ) %in% result)
     })
+})
+
+test_that(".is_listable_expr treats external pointers as unlistable", {
+    ptr <- new("externalptr")
+    expect_false(pkgnet:::.is_listable_expr(ptr))
+})
+
+test_that(".parse_function falls back when as.list fails on listable objects", {
+    if (!methods::isClass("PkgnetNoListable")) {
+        methods::setClass("PkgnetNoListable", slots = c(x = "numeric"))
+    }
+    obj <- methods::new("PkgnetNoListable", x = 1)
+
+    expect_true(pkgnet:::.is_listable_expr(obj))
+    expect_error(as.list(obj))
+
+    result <- expect_warning(
+        pkgnet:::.parse_function(obj),
+        regexp = "Expression parsing: as\\.list\\(\\) failed"
+    )
+    expect_true(is.character(result))
+    expect_length(result, 1)
+})
+
+test_that(".parse_R6_expression falls back when as.list fails on listable objects", {
+    if (!methods::isClass("PkgnetNoListable")) {
+        methods::setClass("PkgnetNoListable", slots = c(x = "numeric"))
+    }
+    obj <- methods::new("PkgnetNoListable", x = 1)
+
+    expect_true(pkgnet:::.is_listable_expr(obj))
+    expect_error(as.list(obj))
+
+    result <- expect_warning(
+        pkgnet:::.parse_R6_expression(obj),
+        regexp = "Expression parsing: as\\.list\\(\\) failed"
+    )
+    expect_true(is.character(result))
+    expect_length(result, 1)
 })
 
 

@@ -1,7 +1,7 @@
 Package: pkgnet
 Type: Package
 Title: Get Network Representation of an R Package
-Version: 0.6.0
+Version: 0.6.1
 Authors@R: c(
     person("Brian", "Burns", email = "brian.burns.opensource@gmail.com", role = c("aut", "cre")),
     person("James", "Lamb", email = "jaylamb20@gmail.com", role = c("aut")),
@@ -22,9 +22,9 @@ URL: https://github.com/uptake/pkgnet, https://uptake.github.io/pkgnet/
 BugReports: https://github.com/uptake/pkgnet/issues
 RoxygenNote: 7.3.3
 NeedsCompilation: no
-Packaged: 2026-01-27 03:16:07 UTC; brianburns
+Packaged: 2026-08-13 04:24:23 UTC; runner
 Author: Brian Burns [aut, cre],
   James Lamb [aut],
   Jay Qi [aut]
 Repository: CRAN
-Date/Publication: 2026-01-27 06:20:02 UTC
+Date/Publication: 2026-08-31 15:00:02 UTC
